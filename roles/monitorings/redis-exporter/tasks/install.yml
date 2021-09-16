@@ -1,0 +1,47 @@
+---
+- name: Distribute redis source
+  copy:
+    src: "{{item}}"
+    dest: /tmp/redis_exporter.tar.gz
+  with_items:
+    - "{{redis_exporter_source_file}}"
+
+- name: Unarchive redis exporter
+  unarchive:
+    src: "/tmp/redis_exporter.tar.gz"
+    remote_src: yes
+    dest: "/tmp/"
+
+- name: create prometheus system group
+  group:
+    name: prometheus
+    system: true
+    state: present
+
+- name: create prometheus system user
+  user:
+    name: prometheus
+    system: true
+    shell: "/sbin/nologin"
+    group: "{{ prometheus_exporters_common_group }}"
+    createhome: false
+    home: /tmp
+  failed_when: no
+
+- name: create prometheus data directory
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ prometheus_exporters_common_user }}"
+    group: "{{ prometheus_exporters_common_group }}"
+    mode: 0755
+  with_items:
+    - "{{ prometheus_base_path }}"
+    - "{{ prometheus_redis_exporter_path }}"
+
+- name: Move redis exporter 
+  copy:
+    src: "/tmp/redis_exporter"
+    dest: "{{ prometheus_redis_exporter_path }}"
+    remote_src: true
+    mode: 0755

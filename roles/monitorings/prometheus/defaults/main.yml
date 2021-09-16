@@ -1,0 +1,53 @@
+---
+go_arch_map:
+  i386: '386'
+  x86_64: 'amd64'
+  aarch64: 'arm64'
+  armv7l: 'armv7'
+  armv6l: 'armv8'
+prometheus_version: 2.15.1
+
+prometheus_config_dir: /etc/prometheus
+prometheus_db_dir: /var/lib/prometheus
+
+prometheus_web_listen_address: "0.0.0.0:9090"
+prometheus_web_external_url: ''
+
+prometheus_storage_retention: "2d"
+
+prometheus_config_flags_extra: {}
+
+prometheus_alertmanager_config:
+  - scheme: https
+    path_prefix: /alertmanager
+    basic_auth:
+      username: user
+      password: pass
+    static_configs:
+      - targets: ["127.0.0.1:9093"]
+
+prometheus_alert_relabel_configs: []
+
+prometheus_global:
+  scrape_interval: 15s
+  scrape_timeout: 10s
+  evaluation_interval: 15s
+
+prometheus_external_labels:
+  environment: "{{ ansible_fqdn | default(ansible_host) | default(inventory_hostname) }}"
+
+prometheus_targets: []
+       
+prometheus_scrape_configs: []
+
+prometheus_config_file: 'prometheus.yml.j2'
+
+prometheus_alert_rules: []
+
+prometheus_route_prefix: "/"
+
+
+cpu_percentage_default: 70
+cpu_loadtime_default: 4m
+ram_usage_percentage_default: 80
+disk_usage_percentage_default: 70

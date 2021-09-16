@@ -1,0 +1,7 @@
+{{ ansible_managed | comment }}
+- labels:
+    env: nonprod
+  targets:
+{% for server in server_to_monitor_nonprod %}
+    - {{ server }}:9100
+{% endfor %}

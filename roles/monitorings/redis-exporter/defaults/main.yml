@@ -1,0 +1,6 @@
+---
+prometheus_redis_exporter_version: v0.21.0
+redis_exporter_source_file: "redis_exporter-{{ prometheus_redis_exporter_version }}.linux-amd64.tar.gz"
+prometheus_base_path: "/opt/prometheus"
+prometheus_redis_exporter_path: "/opt/prometheus/exporters/"
+prometheus_redis_exporter_file: "/opt/prometheus/exporters/redis_file"

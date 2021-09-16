@@ -1,0 +1,50 @@
+---
+
+- name: GRAFANA | Ensure grafana group
+  group:
+    name: "{{ grafana_group }}"
+
+- name: grafana | Ensure grafana user
+  user:
+    name: "{{ grafana_user }}"
+    group: "{{ grafana_group }}"
+    shell: /bin/bash
+
+- name: GRAFANA | Installing dependencies
+  apt:
+    pkg: "{{ item }}"
+    state: present
+  with_items: "{{ grafana_required_libs }}"
+  tags:
+    skip_ansible_lint
+
+- name: GRAFANA | Ensure skeleton paths
+  file:
+    dest: "{{ item }}"
+    owner: "{{ grafana_user }}"
+    group: "{{ grafana_user }}"
+    state: directory
+  with_items:
+    - "{{ grafana_skeleton_paths }}"
+
+- name: GRAFANA | Debian repo key on package cloud
+  apt_key:
+    url: "{{ grafana_key }}"
+    state: present
+
+- name: GRAFANA | Debian grafana repo
+  apt_repository:
+    repo: "{{ grafana_repo }}"
+
+- name: GRAFANA | Install grafana
+  apt:
+    name: "grafana{{ (grafana_version == 'latest') | ternary('', '=' + grafana_version) }}"
+    state: "{{ (grafana_version == 'latest') | ternary('latest', 'present') }}"
+    force: true
+
+- name: Links grafana dir to /
+  file:
+    src: /etc/grafana
+    dest: /grafana
+    state: link
+    force: yes

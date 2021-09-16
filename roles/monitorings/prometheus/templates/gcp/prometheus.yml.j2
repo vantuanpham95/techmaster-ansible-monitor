@@ -1,0 +1,43 @@
+{{ ansible_managed | comment }}
+global:
+  scrape_interval:     15s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
+  evaluation_interval: 15s # Evaluate rules every 15 seconds. The default is every 1 minute.
+
+rule_files:
+  - /etc/prometheus/rules/*.rules
+
+scrape_configs:
+  - job_name: 'prometheus'
+    scrape_interval: 15s
+    static_configs:
+    - targets: ['prometheus-01:9090', 'prometheus-02:9090']
+
+  - job_name: node
+    scrape_interval: 15s
+    scrape_timeout: 10s
+    metrics_path: /metrics
+    scheme: http
+    file_sd_configs:
+    - files:
+      - /etc/prometheus/file_sd/node.yml
+      refresh_interval: 5m
+
+  - job_name: blackbox_http
+    file_sd_configs:
+    - files:
+      - /etc/prometheus/file_sd/blackbox_http.yml
+    metrics_path: /probe
+    params:
+      module:
+      - http_2xx
+    relabel_configs:
+    - source_labels:
+      - __address__
+      target_label: __param_target
+    - source_labels:
+      - __param_target
+      target_label: instance
+    - replacement: gcp-prometheus:9115
+      target_label: __address__
+    scrape_interval: 30s
+    scrape_timeout: 10s

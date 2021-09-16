@@ -1,0 +1,4 @@
+---
+hostname: prometheus-01
+thanos_compactor_enabled: True
+ansible_processor_vcpus: 4

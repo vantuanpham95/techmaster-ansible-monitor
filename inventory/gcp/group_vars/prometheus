@@ -1,0 +1,6 @@
+---
+server_to_monitor_nonprod:
+  prometheus-01:
+    hosts_vault: prometheus_01
+  prometheus-02:
+    hosts_vault: prometheus_02

@@ -1,0 +1,100 @@
+---
+- name: Include vault variables
+  include_vars: "hosts-vault-{{ env }}.yml"
+  tags:
+    - config-hosts
+    - config
+
+- name: copy custom alerting rule files
+  copy:
+    src: "{{ item }}"
+    dest: "{{ prometheus_config_dir }}/rules/"
+    owner: root
+    group: "{{ prometheus_exporters_common_group }}"
+    mode: 0640
+  with_fileglob:
+    - files/{{ env }}/rules/*.rules
+  notify:
+    - reload prometheus
+  tags:
+    - config
+    - update-rules
+
+- name: configure prometheus
+  template:
+    src: "{{ env }}/{{ prometheus_config_file }}"
+    dest: "{{ prometheus_config_dir }}/prometheus.yml"
+    force: true
+    owner: root
+    group: "{{ prometheus_exporters_common_group }}"
+    mode: 0640
+  notify:
+    - reload prometheus
+  tags:
+    - config
+
+- name: Template systemd service unit
+  template:
+    src: prometheus.service.j2
+    dest: /etc/systemd/system/prometheus.service
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - reload prometheus
+  tags:
+    - config
+
+- name: copy prometheus custom static targets
+  copy:
+    src: "{{ item }}"
+    dest: "{{ prometheus_config_dir }}/file_sd/"
+    force: true
+    owner: root
+    group: "{{ prometheus_exporters_common_group }}"
+    mode: 0644
+  with_fileglob:
+    - files/{{ env }}/file_sd/*.yml
+  tags:
+    - config-hosts
+    - config
+  notify:
+    - reload prometheus
+
+- name: Template prometheus dynamic targets
+  template:
+    src: "{{ item }}"
+    dest: "{{ prometheus_config_dir }}/file_sd/"
+    owner: root
+    group: "{{ prometheus_exporters_common_group }}"
+    mode: 0644
+  with_fileglob:
+    - templates/{{ env }}/*.yml
+  notify:
+    - reload prometheus
+  tags:
+    - config-hosts
+    - config
+
+- name: Template prometheus dynamic rules
+  template:
+    src: "{{ item }}"
+    dest: "{{ prometheus_config_dir }}/rules/"
+    owner: "{{ prometheus_exporters_common_user }}"
+    group: "{{ prometheus_exporters_common_group }}"
+    mode: 0640
+  with_fileglob:
+    - templates/{{ env }}/*.rules
+  notify:
+    - reload prometheus
+  tags:
+    - update-rules
+    - config
+
+- name: Template prometheus hosts file
+  template:
+    src: "{{ env }}/prometheus-hosts.j2"
+    dest: /etc/hosts
+  tags:
+    - config-hosts
+    - config

@@ -1,0 +1,24 @@
+---
+- name: Deliver systemd file
+  template:
+    src: redis_exporter.service
+    dest: "/etc/systemd/system/redis_exporter.service"
+  notify:
+    - restart redis exporter
+
+- name: Deliver redis_file
+  template:
+    src: redis_file.j2
+    dest: "{{prometheus_redis_exporter_file}}"
+    owner: "{{ prometheus_exporters_common_user }}"
+    group: "{{ prometheus_exporters_common_group }}"
+  vars:
+    - redis_ports: "6379"
+  notify:
+    - restart redis exporter
+
+- name: Start redis_exporter
+  service:
+    name: redis_exporter
+    state: started
+    enabled: true

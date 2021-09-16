@@ -1,0 +1,6 @@
+---
+- name: restart redis exporter
+  service:
+    name: redis_exporter
+    state: restarted
+    enabled: true

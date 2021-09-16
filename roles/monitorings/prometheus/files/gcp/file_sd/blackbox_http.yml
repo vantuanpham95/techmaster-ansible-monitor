@@ -1,0 +1,7 @@
+- labels:
+    service: public_services
+    project: techmaster
+    env: gcp
+  targets:
+    - https://techmaster.vn/
+    - https://devops.techmaster.vn/

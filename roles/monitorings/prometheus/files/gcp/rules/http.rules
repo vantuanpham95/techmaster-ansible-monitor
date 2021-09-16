@@ -1,0 +1,12 @@
+groups:
+- name: HTTP endpoints rules
+  rules:
+  - alert: Non200CodeReturned
+    expr: probe_http_status_code != 200 and probe_http_status_code != 0
+    for: 10s
+    labels:
+      severity: alert
+      value: '{{$value}}'
+      service: '{{$labels.service}}'
+    annotations:
+      description: 'URL {{$labels.instance}} returned non-200 code for over 10s.'

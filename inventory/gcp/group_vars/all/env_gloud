@@ -1,0 +1,49 @@
+---
+env: "gcp"
+node_name: "{{ inventory_hostname }}"
+my_ip: "{{ ansible_ens4.ipv4.address }}" 
+
+prometheus_exporters_common_user: prometheus
+prometheus_exporters_common_group: "{{ prometheus_exporters_common_user }}"
+prometheus_version: 2.19.2
+prometheus_config_dir: /etc/prometheus
+prometheus_db_dir: /data/prometheus/prometheus
+
+prometheus_web_listen_address: "0.0.0.0:9090"
+prometheus_web_external_url: ''
+
+prometheus_storage_retention: "4h"
+
+prometheus_config_flags_extra: {}
+
+prometheus_alertmanager_config:
+  - scheme: https
+    path_prefix: /alertmanager
+    basic_auth:
+      username: user
+      password: pass
+    static_configs:
+      - targets: ["127.0.0.1:9093"]
+
+prometheus_alert_relabel_configs: []
+
+prometheus_global:
+  scrape_interval: 15s
+  scrape_timeout: 15
+  evaluation_interval: 15s
+
+prometheus_external_labels:
+  environment: "{{ ansible_fqdn | default(ansible_host) | default(inventory_hostname) }}"
+
+prometheus_targets: []
+
+prometheus_scrape_configs: []
+
+prometheus_config_file: 'prometheus.yml.j2'
+
+prometheus_alert_rules: []
+
+##nginx
+grafana_domain: "grafana.tuanpham.local"
+prometheus_domain: "prometheus.tuanpham.local"
+prometheus_alert_domain: "prometheus-alert.tuanpham.local"

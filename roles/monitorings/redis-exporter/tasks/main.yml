@@ -1,0 +1,8 @@
+---
+- include: install.yml
+
+- include: configure.yml
+  vars:
+    - redis_port: "6379"
+  tags:
+    - redis-exporter-configure

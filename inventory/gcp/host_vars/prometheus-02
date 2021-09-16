@@ -1,0 +1,3 @@
+---
+hostname: prometheus-02
+ansible_processor_vcpus: 2

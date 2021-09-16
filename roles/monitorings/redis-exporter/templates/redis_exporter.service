@@ -1,0 +1,13 @@
+[Unit]
+Description=redis_exporter - Prometheus exporter for redis.
+After=network.target
+
+[Service]
+Type=simple
+Environment=REDIS_FILE={{ prometheus_redis_exporter_file }}
+User={{ prometheus_exporters_common_user }}
+Group={{ prometheus_exporters_common_user }}
+
+ExecStart={{ prometheus_redis_exporter_path }}/redis_exporter
+SyslogIdentifier=redis_exporter
+Restart=always

@@ -1,0 +1,46 @@
+---
+- name: Create nginx dirs
+  file:
+    path: "{{item}}"
+    state: directory
+  with_items:
+    - "{{nginx_log_dir}}"
+  tags:
+    - nginx
+
+- name: Generate basic auth
+  htpasswd:
+    path: "{{ nginx_basic_auth_path }}"
+    name: "{{ nginx_basic_auth_user }}"
+    password: "{{ nginx_basic_auth_pass }}"
+  when: nginx_basic_auth_enabled is defined and nginx_basic_auth_enabled
+  tags:
+    - nginx
+
+- name: Remove default.conf vhost
+  file:
+    path: "/etc/nginx/conf.d/default.conf"
+    state: absent
+  tags:
+    - nginx
+
+- name: Deliver vhost
+  template:
+    src: "{{ item }}"
+    dest: "/etc/nginx/conf.d/{{ item | basename }}"
+  notify:
+    - (Handler) Check NGINX
+    - (Handler) Start/reload NGINX
+  with_fileglob:
+    - templates/{{ env }}/*.conf
+  tags:
+    - nginx
+    - nginx-config
+
+- name: Make sure nginx start
+  service:
+    name: nginx
+    state: started
+    enabled: true
+  tags:
+    - nginx
