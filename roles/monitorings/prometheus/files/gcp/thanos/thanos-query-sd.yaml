@@ -1,0 +1,31 @@
+- labels:
+    env: nonprod
+  targets:
+    - thanos-store:10905
+    - thanos-sidecar:10901
+    - thanos-integration-nonprod:10901
+    - thanos-app-common-dev:10901
+    - thanos-integration-sandbox:10901
+    - thanos-vinpay-nonprod:10901
+    - thanos-vinpay-sandbox:10901
+    - thanos-ewallet-sandbox:10901
+    - thanos-customer-matching-np:10901
+    - thanos-vincart-nonprod:10901
+    - thanos-identity-services:10901
+    - thanos-gami-nonprod:10901
+    - thanos-promotion-engine-dev:10901
+    - thanos-service-platform-np:10901
+    - thanos-rec-ecart-np:10901
+    - thanos-risk-fraud-np:10901
+    - thanos-onehs-np:10901
+    - thanos-idhomes-nonprod:10901
+    - thanos-merchant-nonprod:10901
+    - thanos-merchant-sandbox:10901
+    - thanos-incubator-nonprod:10901
+    - thanos-integration-platform-nonprod:10901
+    - thanos-b2b-platform-nonprod:10901
+    - thanos-vinticket-nonprod:10901
+    - thanos-onemg-dwh-np:10901
+    - thanos-kubeflow-np:10901
+    - thanos-finance-platform-np:10901
+    - thanos-onemg-dp-np:10901

@@ -28,19 +28,6 @@ PrivateDevices=true
 ProtectHome=true
 NoNewPrivileges=true
 LimitNOFILE=infinity
-{% if prometheus_systemd_version.stdout | int >= 231 %}
-ReadWritePaths={{ prometheus_db_dir }}
-{% else %}
-ReadWriteDirectories={{ prometheus_db_dir }}
-{% endif %}
-{% if prometheus_systemd_version.stdout | int >= 232 %}
-ProtectSystem=strict
-ProtectControlGroups=true
-ProtectKernelModules=true
-ProtectKernelTunables=true
-{% else %}
-ProtectSystem=full
-{% endif %}
 
 {% if http_proxy is defined %}
 Environment="HTTP_PROXY={{ http_proxy }}"{% if https_proxy is defined %} "HTTPS_PROXY={{ https_proxy }}{% endif %}"

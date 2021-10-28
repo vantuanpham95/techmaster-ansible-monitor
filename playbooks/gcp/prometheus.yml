@@ -5,7 +5,7 @@
   become: true
   gather_facts: true
   roles:
-    - { role: monitorings/node-exporter, tags: node-exporter }
+    # - { role: monitorings/node-exporter, tags: node-exporter }
     - { role: monitorings/prometheus, tags: prometheus }
     - { role: monitorings/grafana, tags: grafana }
     - { role: nginx, tags: nginx }

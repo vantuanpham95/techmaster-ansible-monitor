@@ -1,11 +1,13 @@
 ---
 - name: create prometheus system group
+  become: yes
   group:
     name: prometheus
     system: true
     state: present
 
 - name: create prometheus system user
+  become: yes
   user:
     name: prometheus
     system: true
@@ -44,6 +46,7 @@
   register: _download_archive
   until: _download_archive is succeeded
   retries: 5
+  delegate_to: localhost
   delay: 2
   check_mode: false
 
